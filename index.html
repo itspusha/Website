@@ -27,22 +27,25 @@
 
         .rainbow-text {
             font-weight: bold;
-            background-image: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet, red);
+            background-image: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-size: 300% 100%;
-            animation: rainbow-scroll 6s linear infinite;
+            background-size: 200% 100%;
+            animation: rainbow-scroll 4s linear infinite;
             position: relative;
             z-index: 2;
         }
 
+        /* Infinite scroll animation */
         @keyframes rainbow-scroll {
             0% {
                 background-position: 0% 50%;
+                /* Start position */
             }
 
             100% {
-                background-position: 200% 50%;
+                background-position: 400% 50%;
+                /* Scrolls 4x the width of the screen */
             }
         }
 
