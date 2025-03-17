@@ -86,16 +86,15 @@
             align-items: flex-end;
             justify-content: center;
             background: transparent;
-            gap: 3px;
+            gap: 1px;
+            /* Reduced gap to have bars closer together */
             padding: 0 5px;
             pointer-events: none;
             z-index: 2;
         }
 
         .bar {
-            flex: 1;
             background: linear-gradient(to top, red, orange, yellow, green, blue, indigo, violet);
-            height: 10px;
             transition: height 0.1s ease-in-out;
         }
 
@@ -151,8 +150,8 @@
         createRain();
 
         function createBars() {
-            visualizer.innerHTML = '';
-            const numBars = Math.floor(window.innerWidth / 7);
+            visualizer.innerHTML = ''; // Clear existing bars
+            const numBars = Math.floor(window.innerWidth / 7); // Number of bars based on screen width
             for (let i = 0; i < numBars; i++) {
                 let bar = document.createElement('div');
                 bar.classList.add('bar');
@@ -167,8 +166,11 @@
             requestAnimationFrame(animateVisualizer);
             analyser.getByteFrequencyData(dataArray);
             const bars = document.querySelectorAll('.bar');
+            const numBars = bars.length;
+
             bars.forEach((bar, index) => {
-                const value = dataArray[Math.floor(index * bufferLength / bars.length)] || 0;
+                // Map index to a frequency range that spreads across the entire frequency spectrum
+                const value = dataArray[Math.floor(index * bufferLength / numBars)] || 0;
                 bar.style.height = `${value}px`;
             });
         }
