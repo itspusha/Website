@@ -76,27 +76,6 @@
             }
         }
 
-        .visualizer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 150px;
-            display: flex;
-            align-items: flex-end;
-            justify-content: flex-start;
-            background: transparent;
-            gap: 1px;
-            padding: 0 5px;
-            pointer-events: none;
-            z-index: 2;
-        }
-
-        .bar {
-            background: linear-gradient(to top, red, orange, yellow, green, blue, indigo, violet);
-            transition: height 0.1s ease-in-out;
-        }
-
         .audio-controls {
             position: absolute;
             top: 20px;
@@ -116,7 +95,6 @@
         <button id="play-pause">▶️</button>
         <input type="range" id="volume" min="0" max="1" step="0.01" value="0.5">
     </div>
-    <div class="visualizer" id="visualizer"></div>
     <audio id="background-audio" autoplay loop>
         <source src="idle.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
@@ -126,7 +104,6 @@
         const audio = document.getElementById('background-audio');
         const volumeControl = document.getElementById('volume');
         const playPauseButton = document.getElementById('play-pause');
-        const visualizer = document.getElementById('visualizer');
         const rainContainer = document.getElementById('rain');
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
         const analyser = audioContext.createAnalyser();
@@ -134,9 +111,8 @@
         source.connect(analyser);
         analyser.connect(audioContext.destination);
         analyser.fftSize = 512;
-        const bufferLength = analyser.frequencyBinCount;
-        const dataArray = new Uint8Array(bufferLength);
 
+        // Rain effect
         function createRain() {
             for (let i = 0; i < 100; i++) {
                 let raindrop = document.createElement('div');
@@ -147,36 +123,6 @@
             }
         }
         createRain();
-
-        function createBars() {
-            visualizer.innerHTML = ''; // Clear existing bars
-            const numBars = Math.floor(window.innerWidth / 7); // Number of bars based on screen width
-            for (let i = 0; i < numBars; i++) {
-                let bar = document.createElement('div');
-                bar.classList.add('bar');
-                visualizer.appendChild(bar);
-            }
-        }
-
-        createBars();
-        window.addEventListener('resize', createBars);
-
-        function animateVisualizer() {
-            requestAnimationFrame(animateVisualizer);
-            analyser.getByteFrequencyData(dataArray);
-            const bars = document.querySelectorAll('.bar');
-            const numBars = bars.length;
-
-            // Stretch the frequency bins to make each band represent a wider range of frequencies
-            bars.forEach((bar, index) => {
-                // Map each bar to a larger frequency range
-                const frequencyIndex = Math.floor((index / numBars) * (bufferLength / 2)); // Wider frequency span for each band
-                const value = dataArray[frequencyIndex] || 0;
-
-                // Apply the frequency data to the bar height
-                bar.style.height = `${value}px`;
-            });
-        }
 
         volumeControl.addEventListener('input', (event) => {
             audio.volume = event.target.value;
@@ -197,8 +143,6 @@
                 audioContext.resume();
             }
         });
-
-        animateVisualizer();
     </script>
 </body>
 
