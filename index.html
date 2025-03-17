@@ -167,12 +167,14 @@
             const bars = document.querySelectorAll('.bar');
             const numBars = bars.length;
 
+            // Stretch the frequency bins to make each band represent a wider range of frequencies
             bars.forEach((bar, index) => {
-                // Evenly distribute frequencies across all bars
-                const frequencyIndex = Math.floor((index / numBars) * bufferLength);
+                // Map each bar to a larger frequency range
+                const frequencyIndex = Math.floor((index / numBars) * (bufferLength / 2)); // Wider frequency span for each band
                 const value = dataArray[frequencyIndex] || 0;
+
+                // Apply the frequency data to the bar height
                 bar.style.height = `${value}px`;
-                bar.style.width = `${100 / numBars}%`; // Ensure bars fill the screen equally
             });
         }
 
