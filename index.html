@@ -84,7 +84,7 @@
             height: 150px;
             display: flex;
             align-items: flex-end;
-            justify-content: center;
+            justify-content: flex-start;
             background: transparent;
             gap: 1px;
             /* Reduced gap to have bars closer together */
@@ -96,6 +96,8 @@
         .bar {
             background: linear-gradient(to top, red, orange, yellow, green, blue, indigo, violet);
             transition: height 0.1s ease-in-out;
+            width: 100%;
+            /* Fix to ensure bars stretch properly */
         }
 
         .audio-controls {
