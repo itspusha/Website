@@ -21,6 +21,7 @@
             margin: 0;
             font-size: 3rem;
             font-family: Arial, sans-serif;
+            overflow: hidden;
         }
 
         .rainbow-text {
@@ -52,6 +53,7 @@
             padding: 8px;
             border-radius: 10px;
             gap: 10px;
+            z-index: 10;
         }
 
         .audio-controls button {
@@ -79,22 +81,54 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 100px;
+            height: 150px;
             display: flex;
             align-items: flex-end;
             justify-content: space-around;
-            background: rgba(255, 255, 255, 0.1);
+            background: transparent;
+            padding: 0 5px;
+            pointer-events: none;
         }
 
         .bar {
             width: 5px;
+            margin: 5px;
             background: linear-gradient(to top, red, orange, yellow, green, blue, indigo, violet);
             height: 10px;
+        }
+
+        .rain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .raindrop {
+            position: absolute;
+            width: 2px;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.6);
+            animation: rain-fall linear infinite;
+        }
+
+        @keyframes rain-fall {
+            from {
+                transform: translateY(-100%);
+            }
+
+            to {
+                transform: translateY(100vh);
+            }
         }
     </style>
 </head>
 
 <body>
+    <div class="rain" id="rain"></div>
     <span class="rainbow-text">Session likes boys</span>
 
     <div class="audio-controls">
@@ -114,6 +148,7 @@
         const volumeControl = document.getElementById('volume');
         const playPauseButton = document.getElementById('play-pause');
         const visualizer = document.getElementById('visualizer');
+        const rainContainer = document.getElementById('rain');
 
         volumeControl.addEventListener('input', (event) => {
             audio.volume = event.target.value;
@@ -129,12 +164,12 @@
             }
         });
 
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        const analyser = audioCtx.createAnalyser();
-        const source = audioCtx.createMediaElementSource(audio);
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const analyser = audioContext.createAnalyser();
+        const source = audioContext.createMediaElementSource(audio);
         source.connect(analyser);
-        analyser.connect(audioCtx.destination);
-        analyser.fftSize = 64;
+        analyser.connect(audioContext.destination);
+        analyser.fftSize = 128;
 
         const bufferLength = analyser.frequencyBinCount;
         const dataArray = new Uint8Array(bufferLength);
@@ -150,24 +185,33 @@
 
         function animateBars() {
             const bars = document.querySelectorAll('.bar');
-            function update() {
-                requestAnimationFrame(update);
+            function renderFrame() {
                 analyser.getByteFrequencyData(dataArray);
-                bars.forEach((bar, index) => {
-                    bar.style.height = `${(dataArray[index] / 255) * 100}px`;
+                bars.forEach((bar, i) => {
+                    bar.style.height = `${dataArray[i]}px`;
                 });
+                requestAnimationFrame(renderFrame);
             }
-            update();
+            renderFrame();
         }
 
-        audio.addEventListener('play', () => {
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
-        });
+        audio.onplay = () => {
+            audioContext.resume().then(() => {
+                createBars();
+                animateBars();
+            });
+        };
 
-        createBars();
-        animateBars();
+        function createRain() {
+            for (let i = 0; i < 100; i++) {
+                let drop = document.createElement('div');
+                drop.classList.add('raindrop');
+                drop.style.left = `${Math.random() * 100}vw`;
+                drop.style.animationDuration = `${Math.random() * 1 + 0.5}s`;
+                rainContainer.appendChild(drop);
+            }
+        }
+        createRain();
     </script>
 </body>
 
