@@ -87,7 +87,6 @@
             justify-content: flex-start;
             background: transparent;
             gap: 1px;
-            /* Reduced gap to have bars closer together */
             padding: 0 5px;
             pointer-events: none;
             z-index: 2;
@@ -96,7 +95,6 @@
         .bar {
             background: linear-gradient(to top, red, orange, yellow, green, blue, indigo, violet);
             transition: height 0.1s ease-in-out;
-            width: 100%;
         }
 
         .audio-controls {
@@ -170,10 +168,11 @@
             const numBars = bars.length;
 
             bars.forEach((bar, index) => {
-                // Map the index to a frequency range using a logarithmic scale
-                const frequencyIndex = Math.floor(Math.pow(index / numBars, 2) * bufferLength); // Logarithmic scaling
+                // Evenly distribute frequencies across all bars
+                const frequencyIndex = Math.floor((index / numBars) * bufferLength);
                 const value = dataArray[frequencyIndex] || 0;
                 bar.style.height = `${value}px`;
+                bar.style.width = `${100 / numBars}%`; // Ensure bars fill the screen equally
             });
         }
 
