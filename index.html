@@ -46,62 +46,6 @@
             }
         }
 
-        .audio-controls {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            display: flex;
-            align-items: center;
-            background: rgba(255, 255, 255, 0.2);
-            padding: 8px;
-            border-radius: 10px;
-            gap: 10px;
-            z-index: 10;
-        }
-
-        .audio-controls button {
-            background: rgba(255, 255, 255, 0.5);
-            border: none;
-            padding: 5px 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        .audio-controls input[type="range"] {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 100px;
-            height: 5px;
-            background: #fff;
-            border-radius: 5px;
-            outline: none;
-            cursor: pointer;
-        }
-
-        .visualizer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 150px;
-            display: flex;
-            align-items: flex-end;
-            justify-content: space-between;
-            background: transparent;
-            padding: 0 5px;
-            pointer-events: none;
-            z-index: 2;
-        }
-
-        .bar {
-            width: 4px;
-            margin: 2px;
-            background: linear-gradient(to top, red, orange, yellow, green, blue, indigo, violet);
-            height: 10px;
-            transition: height 0.1s ease-in-out;
-        }
-
         .rain {
             position: fixed;
             top: 0;
@@ -131,20 +75,50 @@
                 opacity: 0;
             }
         }
+
+        .visualizer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 150px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            background: transparent;
+            gap: 3px;
+            padding: 0 5px;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .bar {
+            flex: 1;
+            background: linear-gradient(to top, red, orange, yellow, green, blue, indigo, violet);
+            height: 10px;
+            transition: height 0.1s ease-in-out;
+        }
+
+        .audio-controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 5;
+        }
     </style>
 </head>
 
 <body>
     <div class="rain" id="rain"></div>
     <span class="rainbow-text">Session likes boys</span>
-
     <div class="audio-controls">
         <button id="play-pause">▶️</button>
         <input type="range" id="volume" min="0" max="1" step="0.01" value="0.5">
     </div>
-
     <div class="visualizer" id="visualizer"></div>
-
     <audio id="background-audio" autoplay loop>
         <source src="idle.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
@@ -156,6 +130,48 @@
         const playPauseButton = document.getElementById('play-pause');
         const visualizer = document.getElementById('visualizer');
         const rainContainer = document.getElementById('rain');
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const analyser = audioContext.createAnalyser();
+        const source = audioContext.createMediaElementSource(audio);
+        source.connect(analyser);
+        analyser.connect(audioContext.destination);
+        analyser.fftSize = 512;
+        const bufferLength = analyser.frequencyBinCount;
+        const dataArray = new Uint8Array(bufferLength);
+
+        function createRain() {
+            for (let i = 0; i < 100; i++) {
+                let raindrop = document.createElement('div');
+                raindrop.classList.add('raindrop');
+                raindrop.style.left = `${Math.random() * 100}vw`;
+                raindrop.style.animationDuration = `${Math.random() * 1.5 + 0.5}s`;
+                rainContainer.appendChild(raindrop);
+            }
+        }
+        createRain();
+
+        function createBars() {
+            visualizer.innerHTML = '';
+            const numBars = Math.floor(window.innerWidth / 7);
+            for (let i = 0; i < numBars; i++) {
+                let bar = document.createElement('div');
+                bar.classList.add('bar');
+                visualizer.appendChild(bar);
+            }
+        }
+
+        createBars();
+        window.addEventListener('resize', createBars);
+
+        function animateVisualizer() {
+            requestAnimationFrame(animateVisualizer);
+            analyser.getByteFrequencyData(dataArray);
+            const bars = document.querySelectorAll('.bar');
+            bars.forEach((bar, index) => {
+                const value = dataArray[Math.floor(index * bufferLength / bars.length)] || 0;
+                bar.style.height = `${value}px`;
+            });
+        }
 
         volumeControl.addEventListener('input', (event) => {
             audio.volume = event.target.value;
@@ -171,35 +187,12 @@
             }
         });
 
-        function createRain() {
-            for (let i = 0; i < 100; i++) {
-                let raindrop = document.createElement('div');
-                raindrop.classList.add('raindrop');
-                raindrop.style.left = `${Math.random() * 100}vw`;
-                raindrop.style.animationDuration = `${Math.random() * 1.5 + 0.5}s`;
-                rainContainer.appendChild(raindrop);
+        document.addEventListener('click', () => {
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
             }
-        }
-        createRain();
+        });
 
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        const analyser = audioContext.createAnalyser();
-        const source = audioContext.createMediaElementSource(audio);
-        source.connect(analyser);
-        analyser.connect(audioContext.destination);
-        analyser.fftSize = 64;
-        const bufferLength = analyser.frequencyBinCount;
-        const dataArray = new Uint8Array(bufferLength);
-
-        function animateVisualizer() {
-            requestAnimationFrame(animateVisualizer);
-            analyser.getByteFrequencyData(dataArray);
-            visualizer.childNodes.forEach((bar, index) => {
-                if (dataArray[index]) {
-                    bar.style.height = `${dataArray[index]}px`;
-                }
-            });
-        }
         animateVisualizer();
     </script>
 </body>
