@@ -3,7 +3,21 @@
     <script src="main.js"></script>
     <div class="rain" id="rain"></div>
     <span class="rainbow-text">Session likes boys</span>
-    <span class="normal-text">Rattle do be a wizard ong</span>
+
+    <!-- Social Media Buttons Container -->
+    <div class="social-buttons">
+        <a href="https://doxbin.net/user/pusha" class="social-button" target="_blank">
+            <img src="red_doxbin_kyrr.png" alt="Social 1" class="social-icon">
+        </a>
+        <a href="https://discord.gg/rattle" class="social-button" target="_blank">
+            <img src="icons8-discord-500.png" alt="Social 2" class="social-icon">
+        </a>
+        <a href="https://t.me/pu2ha" class="social-button" target="_blank">
+            <img src="icons8-telegram-logo-500.png" alt="Social 3" class="social-icon">
+        </a>
+    </div>
+
+    <span class="normal-text" id="normalText">Rattle do be a wizard ong</span>
 
     <div class="audio-controls">
         <button id="play-pause">▶️</button>
@@ -81,9 +95,7 @@
             background-size: 200% 100%;
             animation: rainbow-scroll 4s linear infinite;
             position: absolute;
-            /* Keep the rainbow text in place */
             top: 40%;
-            /* Position it as you like */
             z-index: 2;
         }
 
@@ -137,7 +149,6 @@
             z-index: 5;
         }
 
-        /* Blinking effect for normal text */
         @keyframes blink {
             0% {
                 opacity: 1;
@@ -145,7 +156,6 @@
 
             50% {
                 opacity: 0.3;
-                /* Make it slightly transparent */
             }
 
             100% {
@@ -156,13 +166,41 @@
         .normal-text {
             position: absolute;
             top: 60%;
-            /* Adjust this value to control the vertical position */
             font-size: 2rem;
-            color: rgb(140, 0, 255);
+            color: rgb(174, 0, 255);
             font-weight: normal;
             z-index: 2;
             animation: blink 2s infinite;
-            /* Apply the slow blink effect */
+            padding-bottom: 50px;
+        }
+
+        /* Social buttons styling */
+        .social-buttons {
+            position: absolute;
+            top: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            z-index: 2;
+        }
+
+        .social-button {
+            display: block;
+            width: 50px;
+            height: 50px;
+            border-radius: 60%;
+            overflow: hidden;
+        }
+
+        .social-button:hover {
+            background-color: #3d3d3db2;
+        }
+
+        .social-icon {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
     </style>
 </body>
