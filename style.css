@@ -3,3 +3,155 @@ canvas {
     top: 0;
     left: 0;
 }
+
+body {
+    background-color: black;
+    background-image: url('f81d760627feb99941e440ea1ec6d791(2).jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-size: 3rem;
+    font-family: Arial, sans-serif;
+    overflow: hidden;
+    position: relative;
+}
+
+@media (max-width: 768px) {
+    body {
+        background-image: url('82ec297948fbc1bf06de47523bed4372.jpg');
+        background-size: cover;
+    }
+}
+
+.rainbow-text {
+    font-weight: bold;
+    background-image: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-size: 200% 100%;
+    animation: rainbow-scroll 4s linear infinite;
+    position: absolute;
+    top: 40%;
+    z-index: 2;
+}
+
+@keyframes rainbow-scroll {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    100% {
+        background-position: 400% 50%;
+    }
+}
+
+.raindrop {
+    position: absolute;
+    width: 2px;
+    height: 10px;
+    background: rgba(255, 255, 255, 0.6);
+    animation: rain-fall linear infinite;
+}
+
+@keyframes rain-fall {
+    from {
+        transform: translateY(-100%);
+        opacity: 1;
+    }
+
+    to {
+        transform: translateY(100vh);
+        opacity: 0;
+    }
+}
+
+.rain {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    /* Ensures the rain covers the full height of the viewport */
+    pointer-events: none;
+    /* Prevent the rain from interfering with other elements */
+    z-index: 1;
+    /* Make sure the rain is behind other elements like text */
+}
+
+.audio-controls {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 5;
+}
+
+.audio-controls button {
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+.audio-controls img {
+    width: 24px;
+    height: 24px;
+}
+
+.normal-text {
+    position: absolute;
+    top: 60%;
+    font-size: 2rem;
+    color: rgb(174, 0, 255);
+    font-weight: bold;
+    z-index: 2;
+    animation: blink 2s infinite;
+    padding-bottom: 50px;
+}
+
+@keyframes blink {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.social-buttons {
+    position: absolute;
+    top: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    z-index: 2;
+}
+
+.social-button {
+    display: block;
+    width: 50px;
+    height: 50px;
+    border-radius: 60%;
+    overflow: hidden;
+}
+
+.social-button:hover {
+    background-color: #3d3d3db2;
+}
+
+.social-icon {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
