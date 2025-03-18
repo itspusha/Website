@@ -26,7 +26,7 @@
         </button>
         <input type="range" id="volume" min="0" max="1" step="0.01" value="0.5">
     </div>
-    <audio id="background-audio" autoplay loop>
+    <audio id="background-audio" loop>
         <source src="idle.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
@@ -60,16 +60,19 @@
             audio.volume = event.target.value;
         });
 
-        // Initial state is paused, so show pause icon
-        audio.pause();
+        // Initially play the audio when the page loads
+        window.addEventListener('load', () => {
+            audio.play(); // Auto-play the audio
+            playPauseIcon.src = 'pause.png'; // Show the pause icon
+        });
 
         playPauseButton.addEventListener('click', () => {
             if (audio.paused) {
                 audio.play();
-                playPauseIcon.src = 'play.png'; // Pause icon when playing
+                playPauseIcon.src = 'pause.png'; // Pause icon when playing
             } else {
                 audio.pause();
-                playPauseIcon.src = 'pause.png'; // Play icon when paused
+                playPauseIcon.src = 'play.png'; // Play icon when paused
             }
         });
 
@@ -131,7 +134,7 @@
         }
 
         .rainbow-text {
-            font-weight: bold;
+            font-weight: bolder;
             background-image: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -210,7 +213,7 @@
             top: 60%;
             font-size: 2rem;
             color: rgb(174, 0, 255);
-            font-weight: bold;
+            font-weight: bolder;
             z-index: 2;
             animation: blink 1s infinite;
             padding-bottom: 50px;
