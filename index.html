@@ -100,6 +100,11 @@
     <style>
         body {
             background-color: black;
+            background-image: url('f81d760627feb99941e440ea1ec6d791(2).jpg');
+            /* Default for desktop */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -109,6 +114,14 @@
             font-family: Arial, sans-serif;
             overflow: hidden;
             position: relative;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                background-image: url('82ec297948fbc1bf06de47523bed4372.jpg');
+                background-size: cover;
+                /* Switch to mobile background */
+            }
         }
 
         .rainbow-text {
