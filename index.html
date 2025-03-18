@@ -1,103 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Session</title>
-    <meta property="og:title" content="Did you know session likes boys?">
-    <meta property="og:description" content="Witterwl Wizard">
-    <meta property="og:image"
-        content="https://media.discordapp.net/attachments/1163173399498076253/1351239264087703562/pfp.png?ex=67d9a721&is=67d855a1&hm=e674151d08891a30acffa67d13fbd232c3273bd9bbe9a936d7053c192b815b7b&=&format=webp&quality=lossless">
-    <meta property="og:url" content="https://rattle.gay">
-    <meta property="og:type" content="website">
-    <link rel="stylesheet" href="style.css">
-
-    <style>
-        body {
-            background-color: black;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            font-size: 3rem;
-            font-family: Arial, sans-serif;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .rainbow-text {
-            font-weight: bold;
-            background-image: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-size: 200% 100%;
-            animation: rainbow-scroll 4s linear infinite;
-            position: relative;
-            z-index: 2;
-        }
-
-        /* Infinite scroll animation */
-        @keyframes rainbow-scroll {
-            0% {
-                background-position: 0% 50%;
-                /* Start position */
-            }
-
-            100% {
-                background-position: 400% 50%;
-                /* Scrolls 4x the width of the screen */
-            }
-        }
-
-        .rain {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 3;
-        }
-
-        .raindrop {
-            position: absolute;
-            width: 2px;
-            height: 10px;
-            background: rgba(255, 255, 255, 0.6);
-            animation: rain-fall linear infinite;
-        }
-
-        @keyframes rain-fall {
-            from {
-                transform: translateY(-100%);
-                opacity: 1;
-            }
-
-            to {
-                transform: translateY(100vh);
-                opacity: 0;
-            }
-        }
-
-        .audio-controls {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            z-index: 5;
-        }
-    </style>
-</head>
-
 <body>
     <canvas id="starCanvas"></canvas>
     <script src="main.js"></script>
     <div class="rain" id="rain"></div>
     <span class="rainbow-text">Session likes boys</span>
+    <span class="normal-text">Rattle do be a wizard ong</span>
+
     <div class="audio-controls">
         <button id="play-pause">▶️</button>
         <input type="range" id="volume" min="0" max="1" step="0.01" value="0.5">
@@ -151,6 +58,111 @@
             }
         });
     </script>
-</body>
 
-</html>
+    <style>
+        body {
+            background-color: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-size: 3rem;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .rainbow-text {
+            font-weight: bold;
+            background-image: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 200% 100%;
+            animation: rainbow-scroll 4s linear infinite;
+            position: absolute;
+            /* Keep the rainbow text in place */
+            top: 40%;
+            /* Position it as you like */
+            z-index: 2;
+        }
+
+        @keyframes rainbow-scroll {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            100% {
+                background-position: 400% 50%;
+            }
+        }
+
+        .rain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 3;
+        }
+
+        .raindrop {
+            position: absolute;
+            width: 2px;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.6);
+            animation: rain-fall linear infinite;
+        }
+
+        @keyframes rain-fall {
+            from {
+                transform: translateY(-100%);
+                opacity: 1;
+            }
+
+            to {
+                transform: translateY(100vh);
+                opacity: 0;
+            }
+        }
+
+        .audio-controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 5;
+        }
+
+        /* Blinking effect for normal text */
+        @keyframes blink {
+            0% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.3;
+                /* Make it slightly transparent */
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .normal-text {
+            position: absolute;
+            top: 60%;
+            /* Adjust this value to control the vertical position */
+            font-size: 2rem;
+            color: rgb(140, 0, 255);
+            font-weight: normal;
+            z-index: 2;
+            animation: blink 2s infinite;
+            /* Apply the slow blink effect */
+        }
+    </style>
+</body>
