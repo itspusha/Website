@@ -20,7 +20,10 @@
     <span class="normal-text" id="normalText">Rattle do be a wizard ong</span>
 
     <div class="audio-controls">
-        <button id="play-pause">▶️</button>
+        <!-- Play/Pause button -->
+        <button id="play-pause">
+            <img src="pause.png" alt="Pause" id="playPauseIcon"> <!-- Show pause icon on load -->
+        </button>
         <input type="range" id="volume" min="0" max="1" step="0.01" value="0.5">
     </div>
     <audio id="background-audio" autoplay loop>
@@ -32,6 +35,7 @@
         const audio = document.getElementById('background-audio');
         const volumeControl = document.getElementById('volume');
         const playPauseButton = document.getElementById('play-pause');
+        const playPauseIcon = document.getElementById('playPauseIcon');
         const rainContainer = document.getElementById('rain');
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
         const analyser = audioContext.createAnalyser();
@@ -56,13 +60,16 @@
             audio.volume = event.target.value;
         });
 
+        // Initial state is paused, so show pause icon
+        audio.pause();
+
         playPauseButton.addEventListener('click', () => {
             if (audio.paused) {
                 audio.play();
-                playPauseButton.textContent = '⏸️';
+                playPauseIcon.src = 'play.png'; // Pause icon when playing
             } else {
                 audio.pause();
-                playPauseButton.textContent = '▶️';
+                playPauseIcon.src = 'pause.png'; // Play icon when paused
             }
         });
 
@@ -94,7 +101,6 @@
 
         // Call the detectDevTools function when the page loads
         detectDevTools();
-
     </script>
 
     <style>
@@ -186,18 +192,17 @@
             z-index: 5;
         }
 
-        @keyframes blink {
-            0% {
-                opacity: 1;
-            }
+        .audio-controls button {
+            background: transparent;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+        }
 
-            50% {
-                opacity: 0.3;
-            }
-
-            100% {
-                opacity: 1;
-            }
+        .audio-controls img {
+            width: 24px;
+            /* Scale the images down to fit with the slider */
+            height: 24px;
         }
 
         .normal-text {
@@ -207,8 +212,23 @@
             color: rgb(174, 0, 255);
             font-weight: normal;
             z-index: 2;
-            animation: blink 2s infinite;
+            animation: blink 1s infinite;
             padding-bottom: 50px;
+        }
+
+        /* Blinking effect, ensuring the text never fades fully */
+        @keyframes blink {
+            0% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+
+            100% {
+                opacity: 1;
+            }
         }
 
         /* Social buttons styling */
