@@ -12,14 +12,11 @@
         content="https://media.discordapp.net/attachments/1163173399498076253/1351239264087703562/pfp.png?ex=67da4fe1&is=67d8fe61&hm=00369af1b657c09c63107e1bfd3ae6b7ace67399cc8aa583bd78426ece6ed70a&=&format=webp&quality=lossless" />
     <meta property="og:url" content="https://rattle.gay" />
     <title>Rattle do be casting spells</title>
-
-    <!-- Link to CSS file -->
-    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
     <canvas id="starCanvas"></canvas>
-    <script src="C:\Dektop\Website\website\main.js"></script>
+    <script src="main.js"></script>
     <div class="rain" id="rain"></div>
     <span class="rainbow-text">Session likes boys</span>
 
@@ -39,7 +36,7 @@
 
     <div class="audio-controls">
         <button id="play-pause">
-            <img src="pause.png" alt="Pause" id="playPauseIcon"> <!-- Initial state set to pause -->
+            <img src="path/to/pause-icon.png" alt="Pause" id="playPauseIcon">
         </button>
         <input type="range" id="volume" min="0" max="1" step="0.01" value="0.5">
     </div>
@@ -47,6 +44,292 @@
         <source src="idle.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
+
+    <script>
+        const audio = document.getElementById('background-audio');
+        const volumeControl = document.getElementById('volume');
+        const playPauseButton = document.getElementById('play-pause');
+        const playPauseIcon = document.getElementById('playPauseIcon');
+        const rainContainer = document.getElementById('rain');
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const analyser = audioContext.createAnalyser();
+        const source = audioContext.createMediaElementSource(audio);
+        source.connect(analyser);
+        analyser.connect(audioContext.destination);
+        analyser.fftSize = 512;
+
+        // Rain effect
+        function createRain() {
+            for (let i = 0; i < 100; i++) {
+                let raindrop = document.createElement('div');
+                raindrop.classList.add('raindrop');
+                raindrop.style.left = `${Math.random() * 100}vw`;
+                raindrop.style.animationDuration = `${Math.random() * 1.5 + 0.5}s`;
+                rainContainer.appendChild(raindrop);
+            }
+        }
+        createRain();
+
+        // Handle volume change
+        volumeControl.addEventListener('input', (event) => {
+            audio.volume = event.target.value;
+        });
+
+        // Handle play/pause button click
+        playPauseButton.addEventListener('click', () => {
+            if (audio.paused) {
+                audio.play();
+                playPauseIcon.src = 'pause.png'; // Set to Pause icon when playing
+            } else {
+                audio.pause();
+                playPauseIcon.src = 'play.png'; // Set to Play icon when paused
+            }
+        });
+
+        document.addEventListener('click', () => {
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+        });
+
+        // Detecting when DevTools are opened and redirecting
+        const detectDevTools = () => {
+            let devtoolsOpen = false;
+            const threshold = 160;  // Threshold for detecting large devtools window size
+            const checkDevTools = setInterval(() => {
+                const widthThreshold = window.outerWidth - window.innerWidth > threshold;
+                const heightThreshold = window.outerHeight - window.innerHeight > threshold;
+                if (widthThreshold || heightThreshold) {
+                    devtoolsOpen = true;
+                } else {
+                    devtoolsOpen = false;
+                }
+
+                // Redirect to google.com if DevTools are detected
+                if (devtoolsOpen) {
+                    window.location.href = "https://www.google.com";
+                }
+            }, 1000); // Check every second
+        };
+
+        // Call the detectDevTools function when the page loads
+        detectDevTools();
+
+        const normalTextElement = document.getElementById('normalText');
+        const messages = [
+            "Rattle do be a wizard ong",
+            "You ain't like me",
+            "Doing some wizardry",
+            "Keep crying",
+            "Who are you?"
+        ];
+
+        let currentMessageIndex = 0;
+
+        function generateEncryptedText(length) {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()';
+            return Array.from({ length }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+        }
+
+        async function waveReveal(message, encryptedMessage) {
+            for (let i = 0; i <= message.length; i++) {
+                // Reveal one character, keep rest encrypted from the original encrypted message
+                normalTextElement.textContent = message.substring(0, i) + encryptedMessage.substring(i);
+                await new Promise(resolve => setTimeout(resolve, 70)); // Faster transition (was 100)
+            }
+        }
+
+        async function waveEncrypt(message, encryptedMessage) {
+            for (let i = 0; i <= message.length; i++) {
+                // Encrypt the first characters, leave the rest as is
+                normalTextElement.textContent = encryptedMessage.substring(0, i) + message.substring(i);
+                await new Promise(resolve => setTimeout(resolve, 70)); // Faster transition (was 100)
+            }
+        }
+
+        async function cycleMessages() {
+            while (true) {
+                const currentMessage = messages[currentMessageIndex];
+
+                // Step 1: Fully encrypted (show immediately)
+                const encryptedMessage = generateEncryptedText(currentMessage.length); // Generate encrypted message once
+                normalTextElement.textContent = encryptedMessage;
+
+                // Step 2: Immediately start decryption (no pause after encrypted)
+                await waveReveal(currentMessage, encryptedMessage);
+
+                // Step 3: Pause on revealed message for 3 seconds
+                await new Promise(resolve => setTimeout(resolve, 3000)); // Show fully revealed message
+
+                // Step 4: Encrypt (left to right)
+                await waveEncrypt(currentMessage, encryptedMessage);
+
+                // Step 5: Move to next message
+                currentMessageIndex = (currentMessageIndex + 1) % messages.length;
+            }
+        }
+
+        window.onload = () => {
+            cycleMessages();
+        };
+
+    </script>
+
+
+
+    <style>
+        body {
+            background-color: black;
+            background-image: url('f81d760627feb99941e440ea1ec6d791(2).jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-size: 3rem;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+            position: relative;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                background-image: url('82ec297948fbc1bf06de47523bed4372.jpg');
+                background-size: cover;
+            }
+        }
+
+        .rainbow-text {
+            font-weight: bold;
+            background-image: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 200% 100%;
+            animation: rainbow-scroll 4s linear infinite;
+            position: absolute;
+            top: 40%;
+            z-index: 2;
+        }
+
+        @keyframes rainbow-scroll {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            100% {
+                background-position: 400% 50%;
+            }
+        }
+
+        .raindrop {
+            position: absolute;
+            width: 2px;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.6);
+            animation: rain-fall linear infinite;
+        }
+
+        @keyframes rain-fall {
+            from {
+                transform: translateY(-100%);
+                opacity: 1;
+            }
+
+            to {
+                transform: translateY(100vh);
+                opacity: 0;
+            }
+        }
+
+        .rain {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            /* Ensures the rain covers the full height of the viewport */
+            pointer-events: none;
+            /* Prevent the rain from interfering with other elements */
+            z-index: 1;
+            /* Make sure the rain is behind other elements like text */
+        }
+
+        .audio-controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 5;
+        }
+
+        .audio-controls button {
+            background: transparent;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+        }
+
+        .audio-controls img {
+            width: 24px;
+            height: 24px;
+        }
+
+        .normal-text {
+            position: absolute;
+            top: 60%;
+            font-size: 2rem;
+            color: rgb(174, 0, 255);
+            font-weight: bold;
+            z-index: 2;
+            animation: blink 2s infinite;
+            padding-bottom: 50px;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .social-buttons {
+            position: absolute;
+            top: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            z-index: 2;
+        }
+
+        .social-button {
+            display: block;
+            width: 50px;
+            height: 50px;
+            border-radius: 60%;
+            overflow: hidden;
+        }
+
+        .social-button:hover {
+            background-color: #3d3d3db2;
+        }
+
+        .social-icon {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    </style>
 </body>
 
 </html>
