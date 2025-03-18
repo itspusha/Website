@@ -2,21 +2,15 @@
 <html lang="en">
 
 <head>
-    <!-- Default Head Tags -->
-    <meta charset="UTF-8"> <!-- Character encoding -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Responsive Design for mobile devices -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <!-- Ensure compatibility with older versions of Internet Explorer -->
     <link rel="icon" href="rattle gang wizard white.png" type="image/x-icon">
-    <!-- Open Graph Meta Tags (for Discord and other social media sharing) -->
-    <meta property="og:title" content="Did you know session likes boys?" /> <!-- Title of the website -->
-    <meta property="og:description" content="Rattle on some wizardry" /> <!-- Description for the website -->
+    <meta property="og:title" content="Did you know session likes boys?" />
+    <meta property="og:description" content="Rattle on some wizardry" />
     <meta property="og:image"
         content="https://media.discordapp.net/attachments/1163173399498076253/1351239264087703562/pfp.png?ex=67da4fe1&is=67d8fe61&hm=00369af1b657c09c63107e1bfd3ae6b7ace67399cc8aa583bd78426ece6ed70a&=&format=webp&quality=lossless" />
-    <!-- Image URL for the preview -->
-    <meta property="og:url" content="https://rattle.gay" /> <!-- The URL of the website -->
-
-    <!-- Title of the Page -->
+    <meta property="og:url" content="https://rattle.gay" />
     <title>Rattle do be casting spells</title>
 </head>
 
@@ -26,7 +20,6 @@
     <div class="rain" id="rain"></div>
     <span class="rainbow-text">Session likes boys</span>
 
-    <!-- Social Media Buttons Container -->
     <div class="social-buttons">
         <a href="https://doxbin.org/user/pusha" class="social-button" target="_blank">
             <img src="red_doxbin_kyrr.png" alt="Social 1" class="social-icon">
@@ -42,9 +35,8 @@
     <span class="normal-text" id="normalText">Rattle do be a wizard ong</span>
 
     <div class="audio-controls">
-        <!-- Play/Pause Button with Image -->
         <button id="play-pause">
-            <img src="path/to/pause-icon.png" alt="Pause" id="playPauseIcon"> <!-- Default is Pause -->
+            <img src="path/to/pause-icon.png" alt="Pause" id="playPauseIcon">
         </button>
         <input type="range" id="volume" min="0" max="1" step="0.01" value="0.5">
     </div>
@@ -123,20 +115,72 @@
         // Call the detectDevTools function when the page loads
         detectDevTools();
 
-        // Automatically set the playPauseIcon to Pause when audio is playing on load
-        window.onload = function () {
-            if (!audio.paused) {
-                playPauseIcon.src = 'pause.png'; // Ensure it's set to pause icon if audio is playing on load
+        const normalTextElement = document.getElementById('normalText');
+        const messages = [
+            "Rattle do be a wizard ong",
+            "You ain't like me",
+            "Doing some wizardry",
+            "Keep crying",
+            "Who are you?"
+        ];
+
+        let currentMessageIndex = 0;
+
+        function generateEncryptedText(length) {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()';
+            return Array.from({ length }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+        }
+
+        async function waveReveal(message, encryptedMessage) {
+            for (let i = 0; i <= message.length; i++) {
+                // Reveal one character, keep rest encrypted from the original encrypted message
+                normalTextElement.textContent = message.substring(0, i) + encryptedMessage.substring(i);
+                await new Promise(resolve => setTimeout(resolve, 100));
             }
+        }
+
+        async function waveEncrypt(message, encryptedMessage) {
+            for (let i = 0; i <= message.length; i++) {
+                // Encrypt the first characters, leave the rest as is
+                normalTextElement.textContent = encryptedMessage.substring(0, i) + message.substring(i);
+                await new Promise(resolve => setTimeout(resolve, 100));
+            }
+        }
+
+        async function cycleMessages() {
+            while (true) {
+                const currentMessage = messages[currentMessageIndex];
+
+                // Step 1: Fully encrypted (show immediately)
+                const encryptedMessage = generateEncryptedText(currentMessage.length); // Generate encrypted message once
+                normalTextElement.textContent = encryptedMessage;
+
+                // Step 2: Immediately start decryption (no pause after encrypted)
+                await waveReveal(currentMessage, encryptedMessage);
+
+                // Step 3: Pause on revealed message for 3 seconds
+                await new Promise(resolve => setTimeout(resolve, 3000)); // Show fully revealed message
+
+                // Step 4: Encrypt (left to right)
+                await waveEncrypt(currentMessage, encryptedMessage);
+
+                // Step 5: Move to next message
+                currentMessageIndex = (currentMessageIndex + 1) % messages.length;
+            }
+        }
+
+        window.onload = () => {
+            cycleMessages();
         };
 
     </script>
+
+
 
     <style>
         body {
             background-color: black;
             background-image: url('f81d760627feb99941e440ea1ec6d791(2).jpg');
-            /* Default for desktop */
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -155,7 +199,6 @@
             body {
                 background-image: url('82ec297948fbc1bf06de47523bed4372.jpg');
                 background-size: cover;
-                /* Switch to mobile background */
             }
         }
 
@@ -181,16 +224,6 @@
             }
         }
 
-        .rain {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 3;
-        }
-
         .raindrop {
             position: absolute;
             width: 2px;
@@ -209,6 +242,19 @@
                 transform: translateY(100vh);
                 opacity: 0;
             }
+        }
+
+        .rain {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            /* Ensures the rain covers the full height of the viewport */
+            pointer-events: none;
+            /* Prevent the rain from interfering with other elements */
+            z-index: 1;
+            /* Make sure the rain is behind other elements like text */
         }
 
         .audio-controls {
@@ -230,7 +276,6 @@
 
         .audio-controls img {
             width: 24px;
-            /* Scale the images down to fit with the slider */
             height: 24px;
         }
 
@@ -245,7 +290,6 @@
             padding-bottom: 50px;
         }
 
-        /* Blink animation */
         @keyframes blink {
 
             0%,
@@ -258,7 +302,6 @@
             }
         }
 
-        /* Social buttons styling */
         .social-buttons {
             position: absolute;
             top: 50%;
