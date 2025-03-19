@@ -42,13 +42,12 @@
         <input type="range" id="volume" min="0" max="1" step="0.01" value="0.5">
     </div>
 
-    <audio id="background-audio" loop>
+    <audio id="background-audio" loop autoplay>
         <source src="idle.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
 
     <script>
-        // Audio controls JavaScript
         const audio = document.getElementById('background-audio');
         const volumeControl = document.getElementById('volume');
         const playPauseButton = document.getElementById('play-pause');
@@ -59,31 +58,28 @@
             audio.volume = event.target.value;
         });
 
-        // Handle play/pause button click
+        // Play/pause button logic
+        let isPlaying = true;
+
         playPauseButton.addEventListener('click', () => {
-            if (audio.paused) {
+            if (isPlaying) {
+                audio.pause();
+                playPauseIcon.src = 'play.png';  // Change to play icon when paused
+                isPlaying = false;
+            } else {
                 audio.play().catch(error => {
-                    // If autoplay is blocked, we'll show a message and handle it gracefully
                     console.error("Audio play error:", error);
                     alert("Click to start audio playback.");
                 });
                 playPauseIcon.src = 'pause.png'; // Change to pause icon when playing
-            } else {
-                audio.pause();
-                playPauseIcon.src = 'play.png'; // Change to play icon when paused
+                isPlaying = true;
             }
         });
 
-        // Ensuring audio starts when the user interacts
-        document.addEventListener('click', () => {
-            if (audio.paused) {
-                audio.play().catch(error => {
-                    // Handle autoplay policy
-                    console.error("Audio play error:", error);
-                    alert("Click to start audio playback.");
-                });
-                playPauseIcon.src = 'pause.png'; // Change to pause icon when playing
-            }
+        // Detect if autoplay was blocked
+        audio.play().catch(() => {
+            // Autoplay was blocked, show message
+            alert("Audio autoplay was blocked by your browser. Please click play to start.");
         });
 
         // Detecting DevTools opening
@@ -127,7 +123,6 @@
 
         async function waveReveal(message, encryptedMessage) {
             for (let i = 0; i <= message.length; i++) {
-                // Reveal one character, keep rest encrypted from the original encrypted message
                 normalTextElement.textContent = message.substring(0, i) + encryptedMessage.substring(i);
                 await new Promise(resolve => setTimeout(resolve, 70)); // Faster transition (was 100)
             }
@@ -135,7 +130,6 @@
 
         async function waveEncrypt(message, encryptedMessage) {
             for (let i = 0; i <= message.length; i++) {
-                // Encrypt the first characters, leave the rest as is
                 normalTextElement.textContent = encryptedMessage.substring(0, i) + message.substring(i);
                 await new Promise(resolve => setTimeout(resolve, 70)); // Faster transition (was 100)
             }
@@ -163,12 +157,12 @@
             }
         }
 
+        // Initialize the page
         window.onload = () => {
-            createRain(); // Call the rain creation function on page load
-            cycleMessages(); // Start the message cycling
+            cycleMessages();
+            createRain();
         };
 
-        // Function to create realistic rain
         function createRain() {
             const rainContainer = document.getElementById("rain");
             const numDrops = 200; // Increased number of drops for denser rain
@@ -198,6 +192,7 @@
                 // Optional: Add slight blur for varying droplet focus
                 raindrop.style.filter = `blur(${Math.random() * 0.5 + 0.5}px)`;  // Blur between 0.5px and 1px
             }
+
         }
     </script>
 
@@ -242,9 +237,7 @@
             padding: 0;
             cursor: pointer;
             width: 25px;
-            /* Smaller width */
             height: 25px;
-            /* Smaller height */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -258,7 +251,6 @@
         .audio-controls input[type="range"] {
             width: 100px;
             height: 10px;
-            /* Make the slider height smaller */
         }
 
         .rainbow-text {
