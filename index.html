@@ -42,12 +42,13 @@
         <input type="range" id="volume" min="0" max="1" step="0.01" value="0.5">
     </div>
 
-    <audio id="background-audio" loop autoplay>
+    <audio id="background-audio" loop>
         <source src="idle.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
 
     <script>
+        // Audio controls JavaScript
         const audio = document.getElementById('background-audio');
         const volumeControl = document.getElementById('volume');
         const playPauseButton = document.getElementById('play-pause');
@@ -58,28 +59,31 @@
             audio.volume = event.target.value;
         });
 
-        // Play/pause button logic
-        let isPlaying = true;
-
+        // Handle play/pause button click
         playPauseButton.addEventListener('click', () => {
-            if (isPlaying) {
-                audio.pause();
-                playPauseIcon.src = 'play.png';  // Change to play icon when paused
-                isPlaying = false;
-            } else {
+            if (audio.paused) {
                 audio.play().catch(error => {
+                    // If autoplay is blocked, we'll show a message and handle it gracefully
                     console.error("Audio play error:", error);
                     alert("Click to start audio playback.");
                 });
                 playPauseIcon.src = 'pause.png'; // Change to pause icon when playing
-                isPlaying = true;
+            } else {
+                audio.pause();
+                playPauseIcon.src = 'play.png'; // Change to play icon when paused
             }
         });
 
-        // Detect if autoplay was blocked
-        audio.play().catch(() => {
-            // Autoplay was blocked, show message
-            alert("Audio autoplay was blocked by your browser. Please click play to start.");
+        // Ensuring audio starts when the user interacts
+        document.addEventListener('click', () => {
+            if (audio.paused) {
+                audio.play().catch(error => {
+                    // Handle autoplay policy
+                    console.error("Audio play error:", error);
+                    alert("Click to start audio playback.");
+                });
+                playPauseIcon.src = 'pause.png'; // Change to pause icon when playing
+            }
         });
 
         // Detecting DevTools opening
@@ -123,6 +127,7 @@
 
         async function waveReveal(message, encryptedMessage) {
             for (let i = 0; i <= message.length; i++) {
+                // Reveal one character, keep rest encrypted from the original encrypted message
                 normalTextElement.textContent = message.substring(0, i) + encryptedMessage.substring(i);
                 await new Promise(resolve => setTimeout(resolve, 70)); // Faster transition (was 100)
             }
@@ -130,6 +135,7 @@
 
         async function waveEncrypt(message, encryptedMessage) {
             for (let i = 0; i <= message.length; i++) {
+                // Encrypt the first characters, leave the rest as is
                 normalTextElement.textContent = encryptedMessage.substring(0, i) + message.substring(i);
                 await new Promise(resolve => setTimeout(resolve, 70)); // Faster transition (was 100)
             }
@@ -157,26 +163,40 @@
             }
         }
 
-        // Initialize the page
         window.onload = () => {
-            cycleMessages();
-            createRain();
+            createRain(); // Call the rain creation function on page load
+            cycleMessages(); // Start the message cycling
         };
 
+        // Function to create realistic rain
         function createRain() {
             const rainContainer = document.getElementById("rain");
-            const numDrops = 100;
+            const numDrops = 200; // Increased number of drops for denser rain
 
             for (let i = 0; i < numDrops; i++) {
                 const raindrop = document.createElement("div");
                 raindrop.classList.add("raindrop");
                 rainContainer.appendChild(raindrop);
 
-                // Randomize the size, speed, and position of the raindrops
+                // Randomize the size of the raindrops (thinner lines)
+                raindrop.style.width = `${Math.random() * 1 + 1}px`; // Raindrop width between 1px to 2px
+                raindrop.style.height = `${Math.random() * 15 + 10}px`; // Raindrop height between 10px to 25px
+
+                // Randomize the starting position horizontally
                 raindrop.style.left = `${Math.random() * 100}vw`;  // Random left position
-                raindrop.style.animationDuration = `${Math.random() * 2 + 3}s`;  // Random fall duration
-                raindrop.style.animationDelay = `-${Math.random() * 2}s`;  // Start immediately without delay
-                raindrop.style.height = `${Math.random() * 20 + 10}px`;  // Random height for raindrop
+
+                // Randomize the fall speed (animation duration) and delay (to stagger drops)
+                raindrop.style.animationDuration = `${Math.random() * 1.5 + 1}s`;  // Faster duration between 1s and 2.5s
+                raindrop.style.animationDelay = `-${Math.random() * 2}s`;  // Random delay to stagger drops
+
+                // Randomize rotation to simulate wind
+                raindrop.style.transform = `rotate(${Math.random() * 10 - 5}deg)`;  // Slight rotation between -5deg and 5deg
+
+                // Randomize opacity for varying visibility
+                raindrop.style.opacity = `${Math.random() * 0.5 + 0.3}`;  // Opacity between 0.3 and 0.8
+
+                // Optional: Add slight blur for varying droplet focus
+                raindrop.style.filter = `blur(${Math.random() * 0.5 + 0.5}px)`;  // Blur between 0.5px and 1px
             }
         }
     </script>
@@ -222,7 +242,9 @@
             padding: 0;
             cursor: pointer;
             width: 25px;
+            /* Smaller width */
             height: 25px;
+            /* Smaller height */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -236,6 +258,7 @@
         .audio-controls input[type="range"] {
             width: 100px;
             height: 10px;
+            /* Make the slider height smaller */
         }
 
         .rainbow-text {
@@ -262,15 +285,14 @@
 
         .raindrop {
             position: absolute;
-            width: 2px;
-            height: 10px;
             background: rgba(255, 255, 255, 0.6);
+            /* Slight transparency for realistic rain effect */
             animation: rain-fall linear infinite;
         }
 
         @keyframes rain-fall {
             from {
-                transform: translateY(-100%);
+                transform: translateY(-100%) rotate(0deg);
                 opacity: 1;
             }
 
