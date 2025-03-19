@@ -34,7 +34,6 @@
 
     <span class="normal-text" id="normalText">Rattle do be a wizard ong</span>
 
-    <!-- Audio Controls Section -->
     <div class="audio-controls">
         <button id="play-pause">
             <img src="pause.png" alt="Pause" id="playPauseIcon">
@@ -53,39 +52,34 @@
         const playPauseButton = document.getElementById('play-pause');
         const playPauseIcon = document.getElementById('playPauseIcon');
 
-        // Handle volume change
         volumeControl.addEventListener('input', (event) => {
             audio.volume = event.target.value;
         });
 
-        // Play/pause button logic
         let isPlaying = true;
 
         playPauseButton.addEventListener('click', () => {
             if (isPlaying) {
                 audio.pause();
-                playPauseIcon.src = 'play.png';  // Change to play icon when paused
+                playPauseIcon.src = 'play.png';
                 isPlaying = false;
             } else {
                 audio.play().catch(error => {
                     console.error("Audio play error:", error);
                     alert("Click to start audio playback.");
                 });
-                playPauseIcon.src = 'pause.png'; // Change to pause icon when playing
+                playPauseIcon.src = 'pause.png';
                 isPlaying = true;
             }
         });
 
-        // Detect if autoplay was blocked
         audio.play().catch(() => {
-            // Autoplay was blocked, show message
             alert("Audio autoplay was blocked by your browser. Please click play to start.");
         });
 
-        // Detecting DevTools opening
         const detectDevTools = () => {
             let devtoolsOpen = false;
-            const threshold = 160;  // Threshold for detecting large devtools window size
+            const threshold = 160;
             const checkDevTools = setInterval(() => {
                 const widthThreshold = window.outerWidth - window.innerWidth > threshold;
                 const heightThreshold = window.outerHeight - window.innerHeight > threshold;
@@ -95,14 +89,12 @@
                     devtoolsOpen = false;
                 }
 
-                // Redirect to google.com if DevTools are detected
                 if (devtoolsOpen) {
                     window.location.href = "https://www.google.com";
                 }
-            }, 1000); // Check every second
+            }, 1000);
         };
 
-        // Call the detectDevTools function when the page loads
         detectDevTools();
 
         const normalTextElement = document.getElementById('normalText');
@@ -124,14 +116,14 @@
         async function waveReveal(message, encryptedMessage) {
             for (let i = 0; i <= message.length; i++) {
                 normalTextElement.textContent = message.substring(0, i) + encryptedMessage.substring(i);
-                await new Promise(resolve => setTimeout(resolve, 70)); // Faster transition (was 100)
+                await new Promise(resolve => setTimeout(resolve, 70));
             }
         }
 
         async function waveEncrypt(message, encryptedMessage) {
             for (let i = 0; i <= message.length; i++) {
                 normalTextElement.textContent = encryptedMessage.substring(0, i) + message.substring(i);
-                await new Promise(resolve => setTimeout(resolve, 70)); // Faster transition (was 100)
+                await new Promise(resolve => setTimeout(resolve, 70));
             }
         }
 
@@ -139,25 +131,19 @@
             while (true) {
                 const currentMessage = messages[currentMessageIndex];
 
-                // Step 1: Fully encrypted (show immediately)
-                const encryptedMessage = generateEncryptedText(currentMessage.length); // Generate encrypted message once
+                const encryptedMessage = generateEncryptedText(currentMessage.length);
                 normalTextElement.textContent = encryptedMessage;
 
-                // Step 2: Immediately start decryption (no pause after encrypted)
                 await waveReveal(currentMessage, encryptedMessage);
 
-                // Step 3: Pause on revealed message for 3 seconds
-                await new Promise(resolve => setTimeout(resolve, 3000)); // Show fully revealed message
+                await new Promise(resolve => setTimeout(resolve, 3000));
 
-                // Step 4: Encrypt (left to right)
                 await waveEncrypt(currentMessage, encryptedMessage);
 
-                // Step 5: Move to next message
                 currentMessageIndex = (currentMessageIndex + 1) % messages.length;
             }
         }
 
-        // Initialize the page
         window.onload = () => {
             cycleMessages();
             createRain();
@@ -165,32 +151,26 @@
 
         function createRain() {
             const rainContainer = document.getElementById("rain");
-            const numDrops = 200; // Increased number of drops for denser rain
+            const numDrops = 200;
 
             for (let i = 0; i < numDrops; i++) {
                 const raindrop = document.createElement("div");
                 raindrop.classList.add("raindrop");
                 rainContainer.appendChild(raindrop);
 
-                // Randomize the size of the raindrops (thinner lines)
-                raindrop.style.width = `${Math.random() * 1 + 1}px`; // Raindrop width between 1px to 2px
-                raindrop.style.height = `${Math.random() * 15 + 10}px`; // Raindrop height between 10px to 25px
+                raindrop.style.width = `${Math.random() * 1 + 1}px`;
+                raindrop.style.height = `${Math.random() * 15 + 10}px`;
 
-                // Randomize the starting position horizontally
-                raindrop.style.left = `${Math.random() * 100}vw`;  // Random left position
+                raindrop.style.left = `${Math.random() * 100}vw`;
 
-                // Randomize the fall speed (animation duration) and delay (to stagger drops)
-                raindrop.style.animationDuration = `${Math.random() * 1.5 + 1}s`;  // Faster duration between 1s and 2.5s
-                raindrop.style.animationDelay = `-${Math.random() * 2}s`;  // Random delay to stagger drops
+                raindrop.style.animationDuration = `${Math.random() * 1.5 + 1}s`;
+                raindrop.style.animationDelay = `-${Math.random() * 2}s`;
 
-                // Randomize rotation to simulate wind
-                raindrop.style.transform = `rotate(${Math.random() * 10 - 5}deg)`;  // Slight rotation between -5deg and 5deg
+                raindrop.style.transform = `rotate(${Math.random() * 10 - 5}deg)`;
 
-                // Randomize opacity for varying visibility
-                raindrop.style.opacity = `${Math.random() * 0.5 + 0.3}`;  // Opacity between 0.3 and 0.8
+                raindrop.style.opacity = `${Math.random() * 0.5 + 0.3}`;
 
-                // Optional: Add slight blur for varying droplet focus
-                raindrop.style.filter = `blur(${Math.random() * 0.5 + 0.5}px)`;  // Blur between 0.5px and 1px
+                raindrop.style.filter = `blur(${Math.random() * 0.5 + 0.5}px)`;
             }
 
         }
@@ -278,7 +258,6 @@
         .raindrop {
             position: absolute;
             background: rgba(255, 255, 255, 0.6);
-            /* Slight transparency for realistic rain effect */
             animation: rain-fall linear infinite;
         }
 
