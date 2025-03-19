@@ -42,14 +42,12 @@
         <input type="range" id="volume" min="0" max="1" step="0.01" value="0.5">
     </div>
 
-    <audio id="background-audio" autoplay loop>
+    <audio id="background-audio" loop autoplay>
         <source src="idle.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
 
     <script>
-        // Audio controls JavaScript
-
         const audio = document.getElementById('background-audio');
         const volumeControl = document.getElementById('volume');
         const playPauseButton = document.getElementById('play-pause');
@@ -60,21 +58,28 @@
             audio.volume = event.target.value;
         });
 
-        // Handle play/pause button click
+        // Play/pause button logic
+        let isPlaying = true;
+
         playPauseButton.addEventListener('click', () => {
-            if (audio.paused) {
-                audio.play();
-                playPauseIcon.src = 'pause.png'; // Change to pause icon when playing
-            } else {
+            if (isPlaying) {
                 audio.pause();
-                playPauseIcon.src = 'play.png'; // Change to play icon when paused
+                playPauseIcon.src = 'play.png';  // Change to play icon when paused
+                isPlaying = false;
+            } else {
+                audio.play().catch(error => {
+                    console.error("Audio play error:", error);
+                    alert("Click to start audio playback.");
+                });
+                playPauseIcon.src = 'pause.png'; // Change to pause icon when playing
+                isPlaying = true;
             }
         });
 
-        document.addEventListener('click', () => {
-            if (audioContext.state === 'suspended') {
-                audioContext.resume();
-            }
+        // Detect if autoplay was blocked
+        audio.play().catch(() => {
+            // Autoplay was blocked, show message
+            alert("Audio autoplay was blocked by your browser. Please click play to start.");
         });
 
         // Detecting DevTools opening
@@ -118,7 +123,6 @@
 
         async function waveReveal(message, encryptedMessage) {
             for (let i = 0; i <= message.length; i++) {
-                // Reveal one character, keep rest encrypted from the original encrypted message
                 normalTextElement.textContent = message.substring(0, i) + encryptedMessage.substring(i);
                 await new Promise(resolve => setTimeout(resolve, 70)); // Faster transition (was 100)
             }
@@ -126,7 +130,6 @@
 
         async function waveEncrypt(message, encryptedMessage) {
             for (let i = 0; i <= message.length; i++) {
-                // Encrypt the first characters, leave the rest as is
                 normalTextElement.textContent = encryptedMessage.substring(0, i) + message.substring(i);
                 await new Promise(resolve => setTimeout(resolve, 70)); // Faster transition (was 100)
             }
@@ -154,10 +157,28 @@
             }
         }
 
+        // Initialize the page
         window.onload = () => {
             cycleMessages();
+            createRain();
         };
 
+        function createRain() {
+            const rainContainer = document.getElementById("rain");
+            const numDrops = 100;
+
+            for (let i = 0; i < numDrops; i++) {
+                const raindrop = document.createElement("div");
+                raindrop.classList.add("raindrop");
+                rainContainer.appendChild(raindrop);
+
+                // Randomize the size, speed, and position of the raindrops
+                raindrop.style.left = `${Math.random() * 100}vw`;  // Random left position
+                raindrop.style.animationDuration = `${Math.random() * 2 + 3}s`;  // Random fall duration
+                raindrop.style.animationDelay = `-${Math.random() * 2}s`;  // Start immediately without delay
+                raindrop.style.height = `${Math.random() * 20 + 10}px`;  // Random height for raindrop
+            }
+        }
     </script>
 
     <style>
@@ -201,9 +222,7 @@
             padding: 0;
             cursor: pointer;
             width: 25px;
-            /* Smaller width */
             height: 25px;
-            /* Smaller height */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -217,7 +236,6 @@
         .audio-controls input[type="range"] {
             width: 100px;
             height: 10px;
-            /* Make the slider height smaller */
         }
 
         .rainbow-text {
